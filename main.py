@@ -279,12 +279,34 @@ async def get_hls_url(
         logger.error(error_detail)
         raise HTTPException(status_code=404, detail=error_detail)
 
+    # Ensure proper URL formatting
+    def format_url(file_path):
+        base_url = "https://netfree2.cc"
+        if file_path.startswith('http'):
+            return file_path
+        
+        # Check if the URL has authentication parameter that needs fixing
+        if "in=unknown" in file_path:
+            # Replace with the correct authentication parameter
+            auth_param = "4184321d319f63c93cff4c7588764623::d9ccfa67efc328ccb078eef0e7c19b69::1746372194::ni"
+            file_path = file_path.replace("in=unknown::su", f"in={auth_param}")
+        
+        # Ensure proper URL joining
+        if file_path.startswith('/'):
+            return f"{base_url}{file_path}"
+        else:
+            return f"{base_url}/{file_path}"
+    
     hls_urls = [{
         'quality': source.get('label', 'Unknown'),
-        'url': f"https://netfree2.cc{source['file']}" if not source['file'].startswith('http') else source['file'],
+        'url': format_url(source['file']),
         'type': source.get('type', 'Unknown'),
         'default': source.get('default', False)
     } for source in sources]
+    
+    # Log URLs for debugging
+    for url in hls_urls:
+        logger.info(f"Generated HLS URL: {url['quality']} - {url['url']}")
 
     logger.info(f"Found {len(hls_urls)} HLS URLs")
     return {"hls_urls": hls_urls}
