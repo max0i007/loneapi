@@ -7,4 +7,6 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0
+      - key: NETFREE_AUTH_PARAM
+        value: "4184321d319f63c93cff4c7588764623::d9ccfa67efc328ccb078eef0e7c19b69::1746372194::ni"
     healthCheckPath: /health
