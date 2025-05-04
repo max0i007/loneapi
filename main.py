@@ -93,7 +93,12 @@ def make_request(id: str, t: str, tm: str, use_fresh_cookies: bool = False):
     }
 
     if not use_fresh_cookies:
-        headers['Cookie'] = 'user_token=c4e606ec3f66b93e8198a48c8c71e6b8; t_hash_t=4184321d319f63c93cff4c7588764623%3A%3A14b66f534e8c2fa68723668dead845ce%3A%3A1746367568%3A%3Ani; recentplay=81688854; 81688854=95%3A7065'
+        # Store raw cookie string - URL decoded format
+        cookie_raw = 'user_token=c4e606ec3f66b93e8198a48c8c71e6b8; t_hash_t=4184321d319f63c93cff4c7588764623::14b66f534e8c2fa68723668dead845ce::1746367568::ni; recentplay=81688854; 81688854=95:7065'
+        # URL-encoded format for headers
+        cookie_encoded = 'user_token=c4e606ec3f66b93e8198a48c8c71e6b8; t_hash_t=4184321d319f63c93cff4c7588764623%3A%3A14b66f534e8c2fa68723668dead845ce%3A%3A1746367568%3A%3Ani; recentplay=81688854; 81688854=95%3A7065'
+        headers['Cookie'] = cookie_encoded
+        logger.info(f"Using stored cookie: {cookie_raw}")
 
     try:
         logger.info(f"Headers being sent: {headers}")
