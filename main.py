@@ -2,6 +2,7 @@ import json
 import re
 import base64
 import logging
+import os
 from typing import Optional, List, Dict, Any, Union
 
 import requests
@@ -287,8 +288,11 @@ async def get_hls_url(
         
         # Check if the URL has authentication parameter that needs fixing
         if "in=unknown" in file_path:
-            # Replace with the correct authentication parameter
-            auth_param = "4184321d319f63c93cff4c7588764623::d9ccfa67efc328ccb078eef0e7c19b69::1746372194::ni"
+            # Use environment variable if available, otherwise use hardcoded value
+            auth_param = os.environ.get(
+                "NETFREE_AUTH_PARAM", 
+                "4184321d319f63c93cff4c7588764623::d9ccfa67efc328ccb078eef0e7c19b69::1746372194::ni"
+            )
             file_path = file_path.replace("in=unknown::su", f"in={auth_param}")
         
         # Ensure proper URL joining
